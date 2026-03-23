@@ -1,0 +1,17 @@
+// producer.alloy
+// 역할: 로그 파일을 읽어서 Kafka "logs" 토픽으로 전송
+
+otelcol.receiver.filelog "app" {
+  include = ["/logs/app.log"]
+
+  output {
+    logs = [otelcol.exporter.kafka.default.input]
+  }
+}
+
+otelcol.exporter.kafka "default" {
+  brokers          = ["kafka:9092"]
+  topic            = "logs"
+  encoding         = "otlp_json"
+  protocol_version = "2.0.0"
+}
